@@ -1,51 +1,3 @@
-// import React, { useState } from 'react'
-// import Input from '../resueable/input'
-// import Button from '../resueable/button'
-
-// const Login = () => {
-//     const[formData,setFormData]=useState({email:"",password:""})
-//     const inputValue=(e)=>{
-//         setFormData({...formData,[e.target.name]:e.target.value});
-
-//     }
-
-//     const loginclick=()=>{
-// let storage=localStorage.getItem("users")
-// if(storage){
-//     let parseData=JSON.parse(storage)
-//     let  isUserExist=parseData.find((val)=>{
-//         return val.email==formData.email
-//     })
-
-//     if(isUserExist){
-//         if(formData.password==isUserExist.password){
-//             localStorage.setItem("[is user loged in.......",true)
-//             alert("users has been loged")
-//         }else{
-//             alert("invail password")
-//         }
-
-//     }else{
-//         alert("np record found")
-//     }
-// }else{
-//     alert("no record found")
-// }
-//     }
-//     console.log(formData)
-//   return (
-// <>
-// <Input inputtype="email" inputname="email" changeevent={inputValue} placeholder="enter your name"/>
-// <Input inputtype="password" inputname="password" changeevent={inputValue} placeholder="enter your name"/>
-
-
-// <Button btntext="signup" btnclickevent={loginclick} />
-//    </>
-//   )
-// }
-
-// export default Login
-
 import React from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
@@ -56,27 +8,31 @@ const LoginSchema = Yup.object().shape({
   email: Yup.string().email('Invalid email').required('Email is required'),
   password: Yup.string().required('Password is required'),
 });
-const Login = () => {
-  const handleLogin = (values) => {
-    let storage = localStorage.getItem("users");
-    if (storage) {
-      let parseData = JSON.parse(storage);
-      let isUserExist = parseData.find((val) => {
-        return val.email === values.email;
-      });
 
-      if (isUserExist) {
-        if (values.password === isUserExist.password) {
-          localStorage.setItem("isUserLoggedIn", true);
-          alert("User has been logged in");
+const Login = () => {
+  const handleLogin = async (values) => {
+    try {
+      const storage = localStorage.getItem("users");
+      if (storage) {
+        const parseData = JSON.parse(storage);
+        const isUserExist = parseData.find((val) => val.email === values.email);
+    
+        if (isUserExist) {
+          if (values.password === isUserExist.password) {
+            localStorage.setItem("isUserLoggedIn", true);
+            alert("User has been logged in");
+          } else {
+            alert("Invalid password");
+          }
         } else {
-          alert("Invalid password");
+          alert("No record found for this email");
         }
       } else {
-        alert("No record found");
+        alert("No user records found");
       }
-    } else {
-      alert("No records found");
+    } catch (error) {
+      console.error("Error occurred during login:", error);
+      alert("An error occurred during login");
     }
   };
 
